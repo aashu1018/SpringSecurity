@@ -5,7 +5,6 @@ import com.SecurityApp.SecurityApplication.entities.PostEntity;
 import com.SecurityApp.SecurityApplication.exceptions.ResourceNotFoundException;
 import com.SecurityApp.SecurityApplication.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
