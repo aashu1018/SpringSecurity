@@ -36,6 +36,10 @@ public class UserService implements UserDetailsService {
         ));
     }
 
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     public UserDTO signUp(SignupDTO signupDTO) {
         Optional<User> user = userRepository.findByEmail(signupDTO.getEmail());
         if(user.isPresent()){
@@ -50,4 +54,7 @@ public class UserService implements UserDetailsService {
         return modelMapper.map(savedUser, UserDTO.class);
     }
 
+    public User save(User newUser) {
+        return userRepository.save(newUser);
+    }
 }
