@@ -1,7 +1,6 @@
 package com.SecurityApp.SecurityApplication.handlers;
 
 import com.SecurityApp.SecurityApplication.entities.User;
-import com.SecurityApp.SecurityApplication.repositories.UserRepository;
 import com.SecurityApp.SecurityApplication.services.JWTService;
 import com.SecurityApp.SecurityApplication.services.UserService;
 import jakarta.servlet.ServletException;
