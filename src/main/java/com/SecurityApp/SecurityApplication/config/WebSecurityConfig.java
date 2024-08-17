@@ -22,7 +22,7 @@ import static com.SecurityApp.SecurityApplication.entities.enums.Role.CREATOR;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -32,29 +32,28 @@ public class WebSecurityConfig {
             "/error","/auth/**","/home.html"
     };
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(publicRoutes).permitAll()
-                        .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyRole(ADMIN.name(), CREATOR.name())
-                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyAuthority(POST_CREATE.name())
-                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAuthority(POST_VIEW.name())
-                        .requestMatchers(HttpMethod.PUT,"/posts/**").hasAuthority(POST_UPDATE.name())
-                        .requestMatchers(HttpMethod.DELETE,"/posts/**").hasAuthority(POST_DELETE.name())
-                        .anyRequest().authenticated())
-                .csrf(csrfConfig -> csrfConfig.disable())
-                .sessionManagement(sessionConfig -> sessionConfig
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login(oauth2config -> oauth2config
-                        .failureUrl("/login?error=true")
-                        .successHandler(oAuth2SuccessHandler));
-//                .formLogin(Customizer.withDefaults());
-
-        return httpSecurity.build();
-    }
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+//        httpSecurity
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(publicRoutes).permitAll()
+//                        .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyRole(ADMIN.name(), CREATOR.name())
+//                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyAuthority(POST_CREATE.name())
+//                        .requestMatchers(HttpMethod.PUT,"/posts/**").hasAuthority(POST_UPDATE.name())
+//                        .requestMatchers(HttpMethod.DELETE,"/posts/**").hasAuthority(POST_DELETE.name())
+//                        .anyRequest().authenticated())
+//                .csrf(csrfConfig -> csrfConfig.disable())
+//                .sessionManagement(sessionConfig -> sessionConfig
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .oauth2Login(oauth2config -> oauth2config
+//                        .failureUrl("/login?error=true")
+//                        .successHandler(oAuth2SuccessHandler));
+////                .formLogin(Customizer.withDefaults());
+//
+//        return httpSecurity.build();
+//    }
 
 //    @Bean
 //    UserDetailsService myInMemoryUserDetailsService(){
@@ -72,6 +71,24 @@ public class WebSecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(normalUser, adminUser);
 //    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+        httpSecurity
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(publicRoutes).permitAll()
+                        .requestMatchers("/posts/**").authenticated()
+                        .anyRequest().authenticated())
+                .csrf(csrfConfig -> csrfConfig.disable())
+                .sessionManagement(sessionConfig -> sessionConfig
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2config -> oauth2config
+                        .failureUrl("/login?error=true")
+                        .successHandler(oAuth2SuccessHandler));
+
+        return httpSecurity.build();
+    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
